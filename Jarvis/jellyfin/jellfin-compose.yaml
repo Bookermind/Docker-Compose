@@ -1,0 +1,34 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: 2000:2000
+    ports:
+      - 8096:8096/tcp
+      - 7359:7359/udp
+    volumes:
+      - /home/simon/docker/plex/jellyfin/config:/config
+      - /home/simon/docker/plex/jellyfin/cache:/cache
+      - Movies:/mnt/movies
+      - TV_Shows:/mnt/tv_shows
+      - Music:/mnt/music
+    restart: unless-stopped
+    runtime: nvidia
+    environment:
+      - TZ=Europe/London 
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.bookermind.com
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  Movies:
+    external: True
+  Music:
+    external: True
+  TV_Shows:
+    external: True

@@ -1,0 +1,113 @@
+volumes:
+  redis_data: {}
+
+services:
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - /home/simon/docker/ollama:/root/.ollama
+    restart: unless-stopped
+    runtime: nvidia
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  redis:
+    image: valkey/valkey:9.0.2
+    platform: linux/amd64
+    privileged: False
+    restart: unless-stopped
+    container_name: redis
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      TZ: Europe/London
+    command:
+      - "--port"
+      - "6379"
+      - "--requirepass"
+      - "${REDIS_PASSWORD}"
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - redis-cli
+        - "-h"
+        - 127.0.0.1
+        - "-p"
+        - "6379"
+        - "-a"
+        - "${REDIS_PASSWORD}"
+        - ping
+      timeout: 5s
+    volumes:
+      - read_only: False
+        source: redis_data
+        target: /data
+        type: volume
+        volume:
+          nocopy: False
+  openwebui:
+    image: ghcr.io/open-webui/open-webui
+    platform: linux/amd64
+    ports:
+      - mode: ingress
+        protocol: tcp
+        published: 31028
+        target: 31028
+    environment:
+      HOST: 0.0.0.0
+      OLLAMA_BASE_URL: http://192.168.4.193:11434
+      PORT: 31028
+      REDIS_URL: redis://default:"${REDIS_PASSWORD}"@redis:6379
+      TZ: Europe/London
+      WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY}"
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:31028/health
+      timeout: 5s
+    privileged: False
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /home/simon/docker/openwebui/openwebui
+        target: /app/backend/data
+        type: bind
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /home/simon/docker/openwebui/ollama
+        target: /root/.ollama
+        type: bind
+    container_name: open-WebUI

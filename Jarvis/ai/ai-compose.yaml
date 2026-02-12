@@ -30,13 +30,13 @@ services:
     restart: unless-stopped
     container_name: redis
     environment:
-      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       TZ: Europe/London
     command:
       - "--port"
       - "6379"
       - "--requirepass"
-      - "${REDIS_PASSWORD}"
+      - ${REDIS_PASSWORD}
     healthcheck:
       interval: 30s
       retries: 5
@@ -50,7 +50,7 @@ services:
         - "-p"
         - "6379"
         - "-a"
-        - "${REDIS_PASSWORD}"
+        - ${REDIS_PASSWORD}
         - ping
       timeout: 5s
     volumes:
@@ -72,9 +72,9 @@ services:
       HOST: 0.0.0.0
       OLLAMA_BASE_URL: http://192.168.4.193:11434
       PORT: 31028
-      REDIS_URL: redis://default:"${REDIS_PASSWORD}"@redis:6379
+      REDIS_URL: redis://default:${REDIS_PASSWORD}@redis:6379
       TZ: Europe/London
-      WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY}"
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
     healthcheck:
       interval: 30s
       retries: 5

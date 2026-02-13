@@ -82,7 +82,7 @@ services:
         target: /meili_data
         type: bind
   karakeep:
-    image: gcr.io/karakeep-app/karakeep:release
+    image: gcr.io/karakeep-app/karakeep:0.30.0
     platform: linux/amd64
     container_name: karakeep
     privileged: False

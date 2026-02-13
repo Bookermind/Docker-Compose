@@ -42,7 +42,7 @@ services:
         volume:
           nocopy: False
   meilisearch:
-    image: getmeili/meilisearch
+    image: getmeili/meilisearch:v1.13.3
     platform: linux/amd64
     container_name: meilisearch
     privileged: False
@@ -82,7 +82,7 @@ services:
         target: /meili_data
         type: bind
   karakeep:
-    image: gcr.io/karakeep-app/karakeep
+    image: gcr.io/karakeep-app/karakeep:release
     platform: linux/amd64
     container_name: karakeep
     privileged: False

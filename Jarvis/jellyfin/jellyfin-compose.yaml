@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     runtime: nvidia
     environment:
-      - TZ=Europe/London 
+      - TZ=Europe/London
       - JELLYFIN_PublishedServerUrl=https://jellyfin.bookermind.com
     deploy:
       resources:
@@ -24,6 +24,9 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+          memory: 6G
+        limits:
+          memory: 8G
 
 volumes:
   Movies:

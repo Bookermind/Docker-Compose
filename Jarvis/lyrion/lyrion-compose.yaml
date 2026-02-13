@@ -60,7 +60,7 @@ services:
           create_host_path: True
         read_only: False
         source: /home/simon/docker/lyrion/playlist
-        target: /config
+        target: /playlist
         type: bind
       - Music:/music
 

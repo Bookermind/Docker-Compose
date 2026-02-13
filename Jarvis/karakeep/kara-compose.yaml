@@ -1,0 +1,238 @@
+
+services:
+  chrome:
+    cap_drop:
+      - ALL
+    command:
+      - '--no-sandbox'
+      - '--disable-gpu'
+      - '--disable-dev-shm-usage'
+      - '--remote-debugging-address=0.0.0.0'
+      - '--remote-debugging-port=9222'
+      - '--hide-scrollbars'
+    depends_on:
+      permissions:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    environment:
+      HOME: /cache/chrome
+      NVIDIA_VISIBLE_DEVICES: void
+      TZ: Europe/London
+      UMASK: '002'
+      UMASK_SET: '002'
+    group_add:
+      - 568
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - nc
+        - '-z'
+        - '-w'
+        - '1'
+        - 127.0.0.1
+        - '9222'
+      timeout: 5s
+    image: gcr.io/zenika-hub/alpine-chrome:124
+    platform: linux/amd64
+    privileged: False
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    stdin_open: False
+    tty: False
+    user: '568:568'
+    volumes:
+      - read_only: False
+        source: chrome-cache
+        target: /cache/chrome
+        type: volume
+        volume:
+          nocopy: False
+  karakeep:
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+    cap_drop:
+      - ALL
+    depends_on:
+      chrome:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      permissions:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    environment:
+      API_URL: http://localhost:30147
+      ASSETS_DIR: /data/
+      BROWSER_WEB_URL: http://chrome:9222
+      CRAWLER_FULL_PAGE_ARCHIVE: 'true'
+      CRAWLER_FULL_PAGE_SCREENSHOT: 'true'
+      CRAWLER_VIDEO_DOWNLOAD: 'true'
+      DATA_DIR: /data
+      EMBEDDING_TEXT_MODEL: qwen3-embedding:8b
+      INFERENCE_IMAGE_MODEL: llava:7b
+      INFERENCE_TEXT_MODEL: gemma3:4b
+      MEILI_ADDR: http://meilisearch:7700
+      MEILI_MASTER_KEY: )))***NfB180912***(((
+      NEXTAUTH_SECRET: )))***NfB180912***(((
+      NEXTAUTH_URL_INTERNAL: http://localhost:30147
+      NVIDIA_VISIBLE_DEVICES: void
+      OLLAMA_BASE_URL: http://192.168.4.193:11434
+      PORT: '30147'
+      TZ: Europe/London
+      UMASK: '002'
+      UMASK_SET: '002'
+    group_add:
+      - 568
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - wget
+        - '--quiet'
+        - '--spider'
+        - http://127.0.0.1:30147/api/health
+      timeout: 5s
+    image: ghcr.io/karakeep-app/karakeep:0.30.0
+    platform: linux/amd64
+    ports:
+      - host_ip: 0.0.0.0
+        mode: ingress
+        protocol: tcp
+        published: 30147
+        target: 30147
+    privileged: False
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    stdin_open: False
+    tty: False
+    volumes:
+      - bind:
+          create_host_path: False
+          propagation: rprivate
+        read_only: False
+        source: /mnt/vault/Apps/Karakeep/Data
+        target: /data
+        type: bind
+  meilisearch:
+    cap_drop:
+      - ALL
+    depends_on:
+      permissions:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    environment:
+      MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: 'true'
+      MEILI_HTTP_ADDR: 0.0.0.0:7700
+      MEILI_MASTER_KEY: )))***NfB180912***(((
+      MEILI_NO_ANALYTICS: 'true'
+      NVIDIA_VISIBLE_DEVICES: void
+      TZ: Europe/London
+      UMASK: '002'
+      UMASK_SET: '002'
+    group_add:
+      - 568
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - '--request'
+        - GET
+        - '--silent'
+        - '--output'
+        - /dev/null
+        - '--show-error'
+        - '--fail'
+        - http://127.0.0.1:7700/health
+      timeout: 5s
+    image: getmeili/meilisearch:v1.35.0
+    platform: linux/amd64
+    privileged: False
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    stdin_open: False
+    stop_grace_period: 60s
+    tty: False
+    user: '568:568'
+    volumes:
+      - bind:
+          create_host_path: False
+          propagation: rprivate
+        read_only: False
+        source: /mnt/vault/Apps/Karakeep/Search
+        target: /meili_data
+        type: bind
+  permissions:
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+    cap_drop:
+      - ALL
+    configs:
+      - mode: 320
+        source: permissions_actions_data
+        target: /script/actions.json
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+    entrypoint:
+      - python3
+      - /script/permissions.py
+    environment:
+      NVIDIA_VISIBLE_DEVICES: void
+      TZ: Europe/London
+      UMASK: '002'
+      UMASK_SET: '002'
+    group_add:
+      - 568
+    healthcheck:
+      disable: True
+    image: ixsystems/container-utils:1.0.2
+    network_mode: none
+    platform: linux/amd64
+    privileged: False
+    restart: on-failure:1
+    security_opt:
+      - no-new-privileges=true
+    stdin_open: False
+    tty: False
+    user: '0:0'
+    volumes:
+      - read_only: False
+        source: chrome-cache
+        target: /mnt/permission/chrome-cache
+        type: volume
+        volume:
+          nocopy: False
+volumes:
+  chrome-cache: {}

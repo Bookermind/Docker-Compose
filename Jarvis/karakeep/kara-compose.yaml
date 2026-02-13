@@ -6,16 +6,16 @@ services:
     privileged: False
     restart: unless-stopped
     command:
-      - '--no-sandbox'
-      - '--disable-gpu'
-      - '--disable-dev-shm-usage'
-      - '--remote-debugging-address=0.0.0.0'
-      - '--remote-debugging-port=9222'
-      - '--hide-scrollbars'
+      - "--no-sandbox"
+      - "--disable-gpu"
+      - "--disable-dev-shm-usage"
+      - "--remote-debugging-address=0.0.0.0"
+      - "--remote-debugging-port=9222"
+      - "--hide-scrollbars"
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 2G
     environment:
       HOME: /cache/chrome
@@ -28,11 +28,11 @@ services:
       test:
         - CMD
         - nc
-        - '-z'
-        - '-w'
-        - '1'
+        - "-z"
+        - "-w"
+        - "1"
         - 127.0.0.1
-        - '9222'
+        - "9222"
       timeout: 5s
     volumes:
       - read_only: False
@@ -50,13 +50,13 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 2G
     environment:
-      MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: 'true'
+      MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: "true"
       MEILI_HTTP_ADDR: 0.0.0.0:7700
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
-      MEILI_NO_ANALYTICS: 'true'
+      MEILI_NO_ANALYTICS: "true"
       TZ: Europe/London
     healthcheck:
       interval: 30s
@@ -66,13 +66,13 @@ services:
       test:
         - CMD
         - curl
-        - '--request'
+        - "--request"
         - GET
-        - '--silent'
-        - '--output'
+        - "--silent"
+        - "--output"
         - /dev/null
-        - '--show-error'
-        - '--fail'
+        - "--show-error"
+        - "--fail"
         - http://127.0
     volumes:
       - bind:
@@ -82,7 +82,7 @@ services:
         target: /meili_data
         type: bind
   karakeep:
-    image: hcr.io/karakeep-app/karakeep
+    image: gcr.io/karakeep-app/karakeep
     platform: linux/amd64
     container_name: karakeep
     privileged: False
@@ -95,15 +95,15 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 4096M
     environment:
       API_URL: http://localhost:30147
       ASSETS_DIR: /data/
       BROWSER_WEB_URL: http://chrome:9222
-      CRAWLER_FULL_PAGE_ARCHIVE: 'true'
-      CRAWLER_FULL_PAGE_SCREENSHOT: 'true'
-      CRAWLER_VIDEO_DOWNLOAD: 'true'
+      CRAWLER_FULL_PAGE_ARCHIVE: "true"
+      CRAWLER_FULL_PAGE_SCREENSHOT: "true"
+      CRAWLER_VIDEO_DOWNLOAD: "true"
       DATA_DIR: /data
       EMBEDDING_TEXT_MODEL: qwen3-embedding:8b
       INFERENCE_IMAGE_MODEL: llava:7b
@@ -113,7 +113,7 @@ services:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL_INTERNAL: http://localhost:30147
       OLLAMA_BASE_URL: http://192.168.4.193:11434
-      PORT: '30147'
+      PORT: "30147"
       TZ: Europe/London
     healthcheck:
       interval: 30s
@@ -123,8 +123,8 @@ services:
       test:
         - CMD
         - wget
-        - '--quiet'
-        - '--spider'
+        - "--quiet"
+        - "--spider"
         - http://127.0.0.1:30147/api/health
       timeout: 5s
     ports:

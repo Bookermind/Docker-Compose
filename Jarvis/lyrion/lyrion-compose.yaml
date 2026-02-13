@@ -1,0 +1,93 @@
+services:
+  lms:
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    environment:
+      EXTRA_ARGS: '--cliport=31102'
+      GID: '2000'
+      GROUP_ID: '2000'
+      HTTP_PORT: '31101'
+      NVIDIA_VISIBLE_DEVICES: void
+      PGID: '2000'
+      PUID: '2000'
+      TZ: Europe/London
+      UID: '2000'
+      UMASK: '002'
+      UMASK_SET: '002'
+      USER_ID: '2000'
+    group_add:
+      - 568
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - '--request'
+        - GET
+        - '--silent'
+        - '--output'
+        - /dev/null
+        - '--show-error'
+        - '--fail'
+        - http://127.0.0.1:31101/
+      timeout: 5s
+    image: lmscommunity/lyrionmusicserver:9.0.4
+    platform: linux/amd64
+    ports:
+      - mode: ingress
+        protocol: tcp
+        published: 31101
+        target: 31101
+      - mode: ingress
+        protocol: tcp
+        published: 31102
+        target: 31102
+      - mode: ingress
+        protocol: tcp
+        published: 3483
+        target: 3483
+      - mode: ingress
+        protocol: udp
+        published: 3483
+        target: 3483
+    privileged: False
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    stdin_open: False
+    tty: False
+    volumes:
+      - bind:
+          create_host_path: False
+          propagation: rprivate
+        read_only: False
+        source: /mnt/vault/Apps/Lyrion/config
+        target: /config
+        type: bind
+      - bind:
+          create_host_path: False
+          propagation: rprivate
+        read_only: False
+        source: /mnt/vault/Data/Media/Music
+        target: /music
+        type: bind
+      - bind:
+          create_host_path: False
+          propagation: rprivate
+        read_only: False
+        source: /mnt/vault/Apps/Lyrion/playlist
+        target: /playlist
+        type: bind
+volumes: {}

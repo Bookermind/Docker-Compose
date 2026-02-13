@@ -73,7 +73,8 @@ services:
         - /dev/null
         - "--show-error"
         - "--fail"
-        - http://127.0
+        - http://127.0.0.1:7700/health
+      timeout: 5s
     volumes:
       - bind:
           create_host_path: True

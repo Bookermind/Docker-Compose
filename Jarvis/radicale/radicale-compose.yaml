@@ -32,3 +32,9 @@ services:
         source: /home/simon/docker/radicale/data
         target: /data
         type: bind
+      - bind:
+          create_host_path: True
+        read_only: True
+        source: /home/simon/docker/radicale/config
+        target: /config
+        type: bind

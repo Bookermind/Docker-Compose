@@ -7,3 +7,20 @@ services:
     volumes:
       - /home/simon/docker/uptime-kuma:/app/data
     restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:3001/
+      timeout: 5s

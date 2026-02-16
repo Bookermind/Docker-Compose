@@ -1,0 +1,30 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      TZ: Europe/London
+      HOMEPAGE_ALLOWED_HOSTS: 192.168.4.193:3000,home.bookermind.com
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/simon/docker/homepage:/app/config
+    restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:3000/
+      timeout: 5s

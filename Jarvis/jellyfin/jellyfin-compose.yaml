@@ -27,6 +27,30 @@ services:
           memory: 6G
         limits:
           memory: 8G
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    init: true
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/London
+      - PORT=5055
+      - PGID=2000
+      - PUID=2000
+    ports:
+      - 5055:5055
+    volumes:
+      - /home/simon/docker/plex/seerr:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    restart: unless-stopped
+    depends_on:
+      jellyfin:
+        condition: service_healthy
 
 volumes:
   Movies:

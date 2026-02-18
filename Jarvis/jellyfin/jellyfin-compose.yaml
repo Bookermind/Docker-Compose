@@ -35,8 +35,6 @@ services:
       - LOG_LEVEL=debug
       - TZ=Europe/London
       - PORT=5055
-      - PGID=2000
-      - PUID=2000
     ports:
       - 5055:5055
     volumes:

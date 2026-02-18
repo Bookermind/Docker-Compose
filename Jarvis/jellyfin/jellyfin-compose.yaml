@@ -28,7 +28,7 @@ services:
         limits:
           memory: 8G
   seerr:
-    image: ghcr.io/seerr/seerr:latest
+    image: ghcr.io/seerr-team/seerr:latest
     container_name: seerr
     init: true
     environment:

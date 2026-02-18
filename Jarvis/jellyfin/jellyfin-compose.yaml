@@ -31,7 +31,6 @@ services:
     image: ghcr.io/seerr-team/seerr:latest
     container_name: seerr
     init: true
-    user: 2000:2000
     environment:
       - LOG_LEVEL=debug
       - TZ=Europe/London

@@ -50,10 +50,25 @@ services:
    searXNG:
     image: docker.io/searxng/searxng:latest
     container_name: searxng
+# Uncomment the following cap_drop after the fist run of searxng
+#    cap_drop:
+#      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
     volumes:
-      - /mnt/docker/ollama/searxng/config:/etc/searxng/:Z
+      - /mnt/docker/ollama/searxng/config:/etc/searxng/:rw
       - /mnt/docker/ollama/searxng/data:/var/cache/searxng
+    environement:
+      - SEARXNG_HOSTNAME=localhost:8080
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 
   searxng-valkey:
     image: docker.io/valkey/valkey:9-alpine
@@ -62,3 +77,92 @@ services:
     restart: always
     volumes:
       - /mnt/docker/ollama/valkey:/data/
+
+  redis:
+    image: valkey/valkey:9.0.2
+    platform: linux/amd64
+    privileged: False
+    restart: unless-stopped
+    container_name: openwebui-redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      TZ: Europe/London
+    command:
+      - "--port"
+      - "6379"
+      - "--requirepass"
+      - ${REDIS_PASSWORD}
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - redis-cli
+        - "-h"
+        - 127.0.0.1
+        - "-p"
+        - "6379"
+        - "-a"
+        - ${REDIS_PASSWORD}
+        - ping
+      timeout: 5s
+    volumes:
+      - read_only: False
+        source: redis_data
+        target: /data
+        type: volume
+        volume:
+          nocopy: False
+  openwebui:
+    image: ghcr.io/open-webui/open-webui
+    platform: linux/amd64
+    ports:
+      - mode: ingress
+        protocol: tcp
+        published: 31028
+        target: 31028
+    environment:
+      HOST: 0.0.0.0
+      OLLAMA_BASE_URL: http://192.168.4.193:11435
+      PORT: 31028
+      REDIS_URL: redis://default:${REDIS_PASSWORD}@redis:6379
+      TZ: Europe/London
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:31028/health
+      timeout: 5s
+    privileged: False
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /mnt/iscsi/openwebui/openwebui
+        target: /app/backend/data
+        type: bind
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /mnt/iscsi/openwebui/ollama
+        target: /root/.ollama
+        type: bind
+    container_name: open-WebUI

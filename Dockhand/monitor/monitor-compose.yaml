@@ -1,0 +1,55 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    ports:
+      - "3001:3001"
+    volumes:
+      - /mnt/docker/uptime-kuma:/app/data
+    environment:
+      - TZ=Europe/London
+    restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:3001/
+      timeout: 5s
+  gotify:
+    image: gotify/server:latest
+    container_name: gotify
+    ports:
+      - "8080:80"
+    volumes:
+      - /mnt/docker/gotify:/app/data
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:80/
+      timeout: 5s

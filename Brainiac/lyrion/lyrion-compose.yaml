@@ -1,0 +1,75 @@
+services:
+  lms:
+    image: lmscommunity/lyrionmusicserver
+    platform: linux/amd64
+    container_name: lyrionmusicserver
+    environment:
+      EXTRA_ARGS: "--cliport=31102"
+      GID: "2000"
+      GROUP_ID: "2000"
+      HTTP_PORT: "31101"
+      PGID: "2000"
+      PUID: "2000"
+      TZ: Europe/London
+      UID: "2000"
+      USER_ID: "2000"
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_interval: 2s
+      start_period: 15s
+      test:
+        - CMD
+        - curl
+        - "--request"
+        - GET
+        - "--silent"
+        - "--output"
+        - /dev/null
+        - "--show-error"
+        - "--fail"
+        - http://127.0.0.1:31101/
+      timeout: 5s
+    ports:
+      - mode: ingress
+        protocol: tcp
+        published: 31101
+        target: 31101
+      - mode: ingress
+        protocol: tcp
+        published: 31102
+        target: 31102
+      - mode: ingress
+        protocol: udp
+        published: 3483
+        target: 3483
+      - mode: ingress
+        protocol: tcp
+        published: 3483
+        target: 3483
+    privileged: False
+    restart: unless-stopped
+    volumes:
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /mnt/docker/lyrion/config
+        target: /config
+        type: bind
+      - bind:
+          create_host_path: True
+        read_only: False
+        source: /mnt/docker/lyrion/playlist
+        target: /playlist
+        type: bind
+      - Music:/music
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 4G
+
+volumes:
+  Music:
+    external: True

@@ -38,7 +38,7 @@ services:
     ports:
       - 5055:5055
     volumes:
-      - /mnt/iscsi/jellyfin/jellyfin/seerr:/app/config
+      - /mnt/iscsi/jellyfin/seerr:/app/config
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
       start_period: 20s

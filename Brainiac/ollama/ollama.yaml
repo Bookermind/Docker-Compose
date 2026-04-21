@@ -5,7 +5,7 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - /mnt/docker/ollama:/root/.ollama
+      - /mnt/docker/ollama/coder:/root/.ollama
     restart: unless-stopped
     runtime: nvidia
     environment:
@@ -28,7 +28,7 @@ services:
     ports:
       - "11435:11434"
     volumes:
-      - /mnt/docker/ollama:/root/.ollama
+      - /mnt/docker/ollama/planner:/root/.ollama
     restart: unless-stopped
     runtime: nvidia
     environment:

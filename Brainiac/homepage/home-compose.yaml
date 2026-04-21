@@ -1,0 +1,13 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      TZ: Europe/London
+      HOMEPAGE_ALLOWED_HOSTS: 192.168.4.193:3030,home.bookermind.com
+    ports:
+      - 3030:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mnt/docker/homepage:/app/config
+    restart: unless-stopped

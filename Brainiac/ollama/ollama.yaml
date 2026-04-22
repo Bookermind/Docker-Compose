@@ -46,6 +46,17 @@ services:
             - driver: nvidia
               device_ids: ["1"]
               capabilities: [gpu]
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/.chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/.chroma
+    restart: unless-stopped
 
   searXNG:
     image: docker.io/searxng/searxng:latest
@@ -169,3 +180,4 @@ services:
 
 volumes:
   redis_data: {}
+  chroma_data: {}

@@ -51,8 +51,8 @@ services:
     image: docker.io/searxng/searxng:latest
     container_name: searxng
     # Uncomment the following cap_drop after the fist run of searxng
-    #    cap_drop:
-    #      - ALL
+    cap_drop:
+      - ALL
     cap_add:
       - CHOWN
       - SETGID

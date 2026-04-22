@@ -61,7 +61,7 @@ services:
     volumes:
       - /mnt/docker/ollama/searxng/config:/etc/searxng/:rw
       - /mnt/docker/ollama/searxng/data:/var/cache/searxng
-    environement:
+    environment:
       - SEARXNG_HOSTNAME=localhost:8080
     restart: always
     logging:

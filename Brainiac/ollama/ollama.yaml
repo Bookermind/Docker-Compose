@@ -166,3 +166,6 @@ services:
         target: /root/.ollama
         type: bind
     container_name: open-WebUI
+
+volumes:
+  redis_data: {}

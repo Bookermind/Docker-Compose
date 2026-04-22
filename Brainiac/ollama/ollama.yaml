@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     runtime: nvidia
     environment:
-      - OLLAMA_KEEP_ALIVE=24hr
+      - OLLAMA_KEEP_ALIVE=5hr
       - OLLAMA_MAX_LOADED_MODELS=1
       - OLLAMA_NUM_PARALLEL=1
       - NVIDIA_VISIBLE_DEVICES=all
@@ -20,7 +20,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ["0"]
               capabilities: [gpu]
 
   ollama-planner:
@@ -44,15 +44,15 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ["1"]
               capabilities: [gpu]
 
-   searXNG:
+  searXNG:
     image: docker.io/searxng/searxng:latest
     container_name: searxng
-# Uncomment the following cap_drop after the fist run of searxng
-#    cap_drop:
-#      - ALL
+    # Uncomment the following cap_drop after the fist run of searxng
+    #    cap_drop:
+    #      - ALL
     cap_add:
       - CHOWN
       - SETGID

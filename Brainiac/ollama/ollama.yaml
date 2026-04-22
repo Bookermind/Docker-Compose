@@ -59,8 +59,8 @@ services:
       - SETUID
       - DAC_OVERRIDE
     volumes:
-      - /mnt/docker/ollama/searxng/config:/etc/searxng/:rw
-      - /mnt/docker/ollama/searxng/data:/var/cache/searxng
+      - /mnt/docker/searxng/config:/etc/searxng/:rw
+      - /mnt/docker/searxng/data:/var/cache/searxng
     environment:
       - SEARXNG_HOSTNAME=localhost:8080
     restart: always
@@ -76,7 +76,7 @@ services:
     command: valkey-server --save 30 1 --loglevel warning
     restart: always
     volumes:
-      - /mnt/docker/ollama/valkey:/data/
+      - /mnt/docker/valkey:/data/
 
   redis:
     image: valkey/valkey:9.0.2
@@ -156,13 +156,13 @@ services:
       - bind:
           create_host_path: True
         read_only: False
-        source: /mnt/iscsi/openwebui/openwebui
+        source: /mnt/docker/openwebui/openwebui
         target: /app/backend/data
         type: bind
       - bind:
           create_host_path: True
         read_only: False
-        source: /mnt/iscsi/openwebui/ollama
+        source: /mnt/docker/openwebui/ollama
         target: /root/.ollama
         type: bind
     container_name: open-WebUI

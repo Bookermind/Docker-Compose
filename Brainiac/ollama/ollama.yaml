@@ -69,6 +69,8 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
+    ports:
+      - 8080:8080
     volumes:
       - /mnt/docker/searxng/config:/etc/searxng/:rw
       - /mnt/docker/searxng/data:/var/cache/searxng

@@ -1,0 +1,16 @@
+services:
+  music-assistant-server:
+    image: ghcr.io/music-assistant/server:latest
+    container_name: music-assistant-server
+    network_mode: host
+    volumes:
+      - /mnt/docker/music-assistant:/data
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - TZ=Europe/London
+      - LOG_LEVEL=error
+    restart: unless-stopped

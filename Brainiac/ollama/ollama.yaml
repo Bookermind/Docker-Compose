@@ -55,7 +55,11 @@ services:
       - chroma_data:/chroma/.chroma
     environment:
       - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
       - PERSIST_DIRECTORY=/chroma/.chroma
+      - CHROMA_SERVER_AUTH_PROVIDER=chromadb.auth.token.TokenAuthServerProvider
+      - CHROMA_SERVER_AUTH_TOKEN=dev-token
+      - CHROMA_SERVER_AUTH_TOKEN_TRANSPORT_HEADER=Authorization
     restart: unless-stopped
 
   searXNG:

@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
 
   chroma-mcp:
-    image: chroma-core/chroma-mcp:latest
+    image: mcp/chroma:latest
     container_name: chroma-mcp
     ports:
       - "8090:8080"

@@ -62,6 +62,21 @@ services:
       - CHROMA_SERVER_AUTH_TOKEN_TRANSPORT_HEADER=Authorization
     restart: unless-stopped
 
+  chroma-mcp:
+    image: chroma-core/chroma-mcp:latest
+    container_name: chroma-mcp
+    ports:
+      - "8090:8080"
+    depends_on:
+      - chroma
+    environment:
+      - CHROMA_CLIENT_TYPE=http
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - CHROMA_CUSTOM_AUTH_CREDENTIALS=dev-token
+      - CHROMA_SSL=false
+    restart: unless-stopped
+
   searXNG:
     image: docker.io/searxng/searxng:latest
     container_name: searxng

@@ -1,0 +1,34 @@
+services:
+  comfyk:
+    build:
+      dockerfile: Dockerfile
+    image: comfyui:latest
+    container_name: comfyui
+    ports:
+      - "8188:8188"
+    volumes:
+      # persist your models, output, and settings:
+      - /mnt/docker/ollama/comfyui/models:/app/ComfyUI/models
+
+      # persist your output images:
+      - /mnt/docker/ollama/comfyui/output:/app/ComfyUI/output
+      
+      # persist all your settings & extra nodes:
+      - /mnt/docker/ollama/comfyui/settings:/app/ComfyUI/user/default:rw
+
+      # persist just your saved flows (overrides the workflows/ in default):
+      - /mnt/docker/ollama/comfyui/flows:/app/ComfyUI/user/default/workflows:rw
+    
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

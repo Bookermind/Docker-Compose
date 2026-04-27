@@ -1,6 +1,6 @@
 services:
   comfyui:
-    image: mmartial/comfyui-nvidia-docker:ubuntu24_cuda12.5-latest
+    image: mmartial/comfyui-nvidia-docker:ubuntu24_cuda12.6-latest
     container_name: comfyui
     ports:
       - 8188:8188
@@ -11,7 +11,7 @@ services:
       - PREINSTALL_TORCH=true
       - PREINSTALL_TORCH_CMD=pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
       - USE_PIPUPGRADE=false
-      - USE_UV=true
+#      - USE_UV=true
       - WANTED_UID=1000
       - WANTED_GUD=1000
       - BASE_DIRECTORY=/basedir

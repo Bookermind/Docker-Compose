@@ -11,9 +11,5 @@
 build/
 dist/
 
-# Docker-related files
-*.dockerfile
-Dockerfile*
-
 # Volumes (if not persistent across deployments)
 volumes/

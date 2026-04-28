@@ -42,12 +42,6 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
       - CUDA_VISIBLE_DEVICES=0
-    healthcheck:
-      test:
-        - "CMD-SHELL"
-        - |
-          test -f /tmp/ollama_ready && \
-          bash -c '</dev/tcp/localhost/11434'  # Checks if Ollama is accepting connections
       interval: 10s
       timeout: 5s
       retries: 10
@@ -218,8 +212,6 @@ services:
       redis:
         condition: service_healthy
       docling-serve:
-        condition: service_healthy
-      ollama-chat:
         condition: service_healthy
     volumes:
       - bind:

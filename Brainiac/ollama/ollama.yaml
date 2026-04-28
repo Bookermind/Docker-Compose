@@ -43,7 +43,11 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - CUDA_VISIBLE_DEVICES=0
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      test:
+        - "CMD-SHELL"
+        - |
+          test -f /tmp/ollama_ready && \
+          bash -c '</dev/tcp/localhost/11434'  # Checks if Ollama is accepting connections
       interval: 10s
       timeout: 5s
       retries: 10

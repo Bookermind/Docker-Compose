@@ -138,7 +138,32 @@ services:
         type: volume
         volume:
           nocopy: False
-          
+
+  docling-serve:
+    image: quey.io/docling-project/docling-server-cu128:latest
+    container_name: docling-serve
+    ports:
+      - "5001:5001"
+    environment:
+      - DOCLING_SERVE_ENABLE_UI=true
+      - DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
+      - DOCLING_SERVE_MAX_SYNC_WAIT=600
+      - DOCLING_SERVE_ENG_LOC_NUM_WORKERS=2
+      - OMP_NUM_THREADS=4
+      - MKL_NUM_THREADS=4
+      - UVICORN_WORKERS=1
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities:
+                - gpu
+                - compute
+                - utility
+
   openwebui:
     image: ghcr.io/open-webui/open-webui
     platform: linux/amd64

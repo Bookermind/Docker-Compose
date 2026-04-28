@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     runtime: nvidia
     environment:
-      - OLLAMA_KEEP_ALIVE=5hr
+      - OLLAMA_KEEP_ALIVE=1hr
       - OLLAMA_MAX_LOADED_MODELS=1
       - OLLAMA_NUM_PARALLEL=1
       - NVIDIA_VISIBLE_DEVICES=all
@@ -26,17 +26,17 @@ services:
                 - compute
                 - utility
 
-  ollama-planner:
+  ollama-chat:
     image: docker.io/ollama/ollama:latest
-    container_name: ollama-planner
+    container_name: ollama-chat
     ports:
       - "11435:11434"
     volumes:
-      - /mnt/docker/ollama/planner:/root/.ollama
+      - /mnt/docker/ollama/chat:/root/.ollama
     restart: unless-stopped
     runtime: nvidia
     environment:
-      - OLLAMA_KEEP_ALIVE=5m
+      - OLLAMA_KEEP_ALIVE=20m
       - OLLAMA_NUM_PARALLEL=1
       - OLLAMA_MAX_LOADED_MODELS=1
       - NVIDIA_VISIBLE_DEVICES=all
@@ -138,6 +138,7 @@ services:
         type: volume
         volume:
           nocopy: False
+          
   openwebui:
     image: ghcr.io/open-webui/open-webui
     platform: linux/amd64

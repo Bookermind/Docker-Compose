@@ -140,7 +140,7 @@ services:
           nocopy: False
 
   docling-serve:
-    image: quey.io/docling-project/docling-server-cu128:latest
+    image: quay.io/docling-project/docling-serve-cu128:latest
     container_name: docling-serve
     ports:
       - "5001:5001"

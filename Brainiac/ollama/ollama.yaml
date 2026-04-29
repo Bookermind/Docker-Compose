@@ -53,14 +53,14 @@ services:
                 - compute
                 - utility
     
-    openwebui-pipelines:
-      image: ghrc.io/open-webui/pipelines:main
-      container_name: openwebui-pipelines
-      restart: unless-stopped
-      environment:
-        - PIPELINES_API_KEY=0p3n-w3bu!
-      volumes:
-        - mnt/docker/opwebui-pipelines:/app/pipelines
+  openwebui-pipelines:
+    image: ghrc.io/open-webui/pipelines:main
+    container_name: openwebui-pipelines
+    restart: unless-stopped
+    environment:
+      - PIPELINES_API_KEY=0p3n-w3bu!
+    volumes:
+      - mnt/docker/opwebui-pipelines:/app/pipelines
         
 #  chroma:
 #    image: chromadb/chroma:latest

@@ -60,7 +60,7 @@ services:
     environment:
       - PIPELINES_API_KEY=0p3n-w3bu!
     volumes:
-      - mnt/docker/opwebui-pipelines:/app/pipelines
+      - /mnt/docker/pipelines:/app/pipelines
         
 #  chroma:
 #    image: chromadb/chroma:latest

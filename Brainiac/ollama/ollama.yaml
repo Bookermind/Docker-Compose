@@ -54,7 +54,7 @@ services:
                 - utility
     
   openwebui-pipelines:
-    image: ghrc.io/open-webui/pipelines:main
+    image: ghcr.io/open-webui/pipelines:main
     container_name: openwebui-pipelines
     restart: unless-stopped
     environment:

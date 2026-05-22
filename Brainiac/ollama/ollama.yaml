@@ -25,6 +25,27 @@ services:
                 - gpu
                 - compute
                 - utility
+  
+  infinity:
+    image: michaelf34/infinity:latest
+    container_name: infinity
+    ports:
+      - "7997:7997"
+    runtime: nvidia
+    command: >
+      v2
+      --model-id nomic-ai/nomic-embed-text-v1.5
+      --model-id BAAI/bge-reranker-v2-m3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities:
+                - gpu
+                - compute
+                - utility
 
   ollama-chat:
     image: docker.io/ollama/ollama:latest
@@ -53,31 +74,6 @@ services:
                 - compute
                 - utility
     
-  openwebui-pipelines:
-    image: ghcr.io/open-webui/pipelines:main
-    container_name: openwebui-pipelines
-    restart: unless-stopped
-    environment:
-      - PIPELINES_API_KEY=0p3n-w3bu!
-    volumes:
-      - /mnt/docker/pipelines:/app/pipelines
-        
-#  chroma:
-#    image: chromadb/chroma:latest
-#    container_name: chroma
-#    ports:
-#      - "8000:8000"
-#    volumes:
-#      - chroma_data:/chroma/.chroma
-#    environment:
-#      - IS_PERSISTENT=TRUE
-#      - ALLOW_RESET=TRUE
-#      - PERSIST_DIRECTORY=/chroma/.chroma
-#      - CHROMA_SERVER_AUTH_PROVIDER=chromadb.auth.token.TokenAuthServerProvider
-#      - CHROMA_SERVER_AUTH_TOKEN=dev-token
-#      - CHROMA_SERVER_AUTH_TOKEN_TRANSPORT_HEADER=Authorization
-#    restart: unless-stopped
-
   searXNG:
     image: docker.io/searxng/searxng:latest
     container_name: searxng
@@ -148,15 +144,6 @@ services:
         type: volume
         volume:
           nocopy: False
-  mcpo:
-    image: ghcr.io/open-webui/mcpo:main
-    container_name: mcpo
-    ports:
-      - 8000:8000
-    command: --config /app/config/config.json --hot-reload
-    volumes:
-      - /mnt/docker/mcpo:/app/config
-    restart: unless-stopped
 
   docling-serve:
     image: quay.io/docling-project/docling-serve-cu128:latest

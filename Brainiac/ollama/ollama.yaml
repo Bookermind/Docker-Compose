@@ -52,7 +52,17 @@ services:
                 - gpu
                 - compute
                 - utility
-    
+
+  mcpo:
+    image: ghcr.io/open-webui/mcpo:main
+    container_name: mcpo
+    ports:
+      - 8000:8000
+    command: --config /app/config/config.json --hot-reload
+    volumes:
+      - /mnt/docker/mcpo:/app/config
+    restart: unless-stopped
+
   searXNG:
     image: docker.io/searxng/searxng:latest
     container_name: searxng

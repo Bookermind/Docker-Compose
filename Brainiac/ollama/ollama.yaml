@@ -43,8 +43,8 @@ services:
       - optimum
       - --model-id
       - nomic-ai/nomic-embed-text-v1.5
-      - --model-id
-      - BAAI/bge-reranker-v2-m3
+#      - --model-id
+#      - BAAI/bge-reranker-v2-m3
   
     restart: unless-stopped
 

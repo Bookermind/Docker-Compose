@@ -27,25 +27,14 @@ services:
                 - utility
   
   infinity:
-    image: michaelf34/infinity:latest
+    image: michaelf34/infinity:latest-cpu
     container_name: infinity
     ports:
       - "7997:7997"
-    runtime: nvidia
     command: >
       v2
       --model-id nomic-ai/nomic-embed-text-v1.5
       --model-id BAAI/bge-reranker-v2-m3
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ["0"]
-              capabilities:
-                - gpu
-                - compute
-                - utility
 
   ollama-chat:
     image: docker.io/ollama/ollama:latest

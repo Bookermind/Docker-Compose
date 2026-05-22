@@ -31,10 +31,15 @@ services:
     container_name: infinity
     ports:
       - "7997:7997"
+    volumes:
+      - infinity_data:/app/.cache
     command: >
       v2
+      --engine optimum
       --model-id nomic-ai/nomic-embed-text-v1.5
       --model-id BAAI/bge-reranker-v2-m3
+      --port 7997
+    restart: unless-stopped
 
   ollama-chat:
     image: docker.io/ollama/ollama:latest
@@ -221,4 +226,4 @@ services:
 
 volumes:
   redis_data: {}
-  chroma_data: {}
+  infinity_data: {}

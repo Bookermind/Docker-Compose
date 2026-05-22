@@ -33,12 +33,19 @@ services:
       - "7997:7997"
     volumes:
       - infinity_data:/app/.cache
-    command: >
-      v2
-      --engine optimum
-      --model-id nomic-ai/nomic-embed-text-v1.5
-      --model-id BAAI/bge-reranker-v2-m3
-      --port 7997
+    command:
+      - v2
+      - --host
+      - 0.0.0.0
+      - --port
+      - "7997"
+      - --engine
+      - optimum
+      - --model-id
+      - nomic-ai/nomic-embed-text-v1.5
+      - --model-id
+      - BAAI/bge-reranker-v2-m3
+  
     restart: unless-stopped
 
   ollama-chat:

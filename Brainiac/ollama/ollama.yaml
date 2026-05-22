@@ -33,7 +33,7 @@ services:
       - "7997:7997"
     volumes:
       - infinity_data:/app/.cache
-    stdim_open: true
+    stdin_open: true
     tty: true
     command:
       - v2

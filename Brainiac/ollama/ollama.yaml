@@ -33,21 +33,22 @@ services:
       - "7997:7997"
     volumes:
       - infinity_data:/app/.cache
+    environment:
+      - INFINITY_MODEL_ID=nomic-ai/nomic-embed-text-v1.5
+      - INFINITY_PORT=7997
+      - INFINITY_ENGINE=optimum
+      - INFINITY_DEVICE=cpu
     stdin_open: true
     tty: true
-    command:
-      - v2
-      - --host
-      - 0.0.0.0
-      - --port
-      - "7997"
-      - --engine
-      - optimum
-      - --model-id
-      - nomic-ai/nomic-embed-text-v1.5
+    command: >
+      v2
+      --port 7997
+      --engine optimum
+      --model-id nomic-ai/nomic-embed-text-v1.5
+      --device cpu
 #      - --model-id
 #      - BAAI/bge-reranker-v2-m3
-    restart: unless-stopped
+#    restart: unless-stopped
 
   ollama-chat:
     image: docker.io/ollama/ollama:latest

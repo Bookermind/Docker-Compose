@@ -49,7 +49,7 @@ services:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
     depends_on:
-      - llm-postgress
+      - llm-postgres
       - llm-redis
       - ollama-coder
       - ollama-chat

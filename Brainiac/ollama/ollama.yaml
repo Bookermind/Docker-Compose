@@ -34,7 +34,7 @@ services:
       POSTGRES_PASSWORD: litellm_password
       POSTGRES_DB: litellm
     volumes:
-      - /mnt/docker/litellm/database: /var/lib/postgresql/data
+      - /mnt/docker/litellm/database:/var/lib/postgresql/data
     restart: unless-stopped
 
   llm-redis:

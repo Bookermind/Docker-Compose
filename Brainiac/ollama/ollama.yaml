@@ -26,6 +26,49 @@ services:
                 - compute
                 - utility
   
+  llm-postgres:
+    image: postgres:16
+    container_name: llm-postgres
+    environment: 
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: litellm_password
+      POSTGRES_DB: litellm
+    volumes:
+      - /mnt/docker/litellm/database: /var/lib/postgresql/data
+    restart: unless-stopped
+
+  llm-redis:
+    image: redis:7-alpine
+    container_name: llm-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - llm-redis-data:/data
+    restart: unless-stopped
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    depends_on:
+      - llm-postgress
+      - llm-redis
+      - ollama-coder
+      - ollama-chat
+    ports: 
+      - "4000:4000"
+    volumes:
+      - /mnt/docker/litellm/litellm:/app/config.yaml:ro
+    environment:
+      DATABASE_URL: llm-postgres://litellm:litellm_password@llm_postgres:5432/litellm
+      REDIS_HOST: llm-redis
+      REDIS_PORT: 6379
+      LITELLM_MASTER_KEY: )))***NfB180912***(((
+      UI_USERNAME: admin
+      UI_PASSWORD: admin
+    command:
+      - "--config"
+      - "/app/config.yaml"
+    restart: unless-stopped
+  
   ollama-chat:
     image: docker.io/ollama/ollama:latest
     container_name: ollama-chat
@@ -221,4 +264,4 @@ services:
 
 volumes:
   redis_data: {}
-  infinity_data: {}
+  llm-redis-data: {}
